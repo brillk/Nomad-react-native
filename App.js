@@ -1,16 +1,38 @@
-import React from "react";
+import * as Location from "expo-location";
+import React, { useEffect, useState } from "react";
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 //Dimemsions로 스크린 크기를 알 수 있다
 
 export default function App() {
+  const [city, setCity] = useState("Loading...");
+  const [location, setLocation] = useState();
+  const [ok, setOk] = useState(true);
+  const ask = async () => {
+    const { granted } = await Location.requestForegroundPermissionsAsync();
+    if (!granted) {
+      setOk(false);
+    }
+    const {
+      coords: { latitude, longitude },
+    } = await Location.getCurrentPositionAsync({ accuracy: 5 });
+    const location = await Location.reverseGeocodeAsync(
+      { latitude, longitude },
+      { useGoogleMaps: false }
+    );
+    setCity(location[0].city);
+  };
+  useEffect(() => {
+    ask();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.city}>
-        <Text style={styles.cityName}>Seoul</Text>
+        <Text style={styles.cityName}>{city}</Text>
       </View>
-      <ScrollView
+      <ScrollView //scrollview안에 있는 여러가지 컴포넌트로 꾸며봤다
         showsHorizontalScrollIndicator={false}
         pagingEnabled
         horizontal
@@ -20,18 +42,7 @@ export default function App() {
           <Text style={styles.temp}>27</Text>
           <Text style={styles.description}>Sunny</Text>
         </View>
-        <View style={styles.day}>
-          <Text style={styles.temp}>27</Text>
-          <Text style={styles.description}>Sunny</Text>
-        </View>
-        <View style={styles.day}>
-          <Text style={styles.temp}>27</Text>
-          <Text style={styles.description}>Sunny</Text>
-        </View>
-        <View style={styles.day}>
-          <Text style={styles.temp}>27</Text>
-          <Text style={styles.description}>Sunny</Text>
-        </View>
+
         <View style={styles.day}>
           <Text style={styles.temp}>27</Text>
           <Text style={styles.description}>Sunny</Text>
@@ -72,4 +83,4 @@ const styles = StyleSheet.create({
   },
 });
 
-//View 의 기본값은 flex, flex-direction은 column이다
+//View의 기본값은 flex, flex-direction은 column이다
