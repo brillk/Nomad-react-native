@@ -8,11 +8,20 @@ import {
   Text,
   View,
 } from "react-native";
+import { Fontisto } from "@expo/vector-icons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 //Dimemsions로 스크린 크기를 알 수 있다
 
 const api = "f3ce92d497991c0e4ff39e68273238a8";
+const icons = {
+  Clouds: "cloudy",
+  Clear: "day-sunny",
+  Rain: "rains",
+  Snow: "snow",
+  Thunderstorm: "lightning",
+  Drizzle: "rain",
+};
 
 export default function App() {
   const [city, setCity] = useState("Loading...");
@@ -59,9 +68,23 @@ export default function App() {
         ) : (
           days.map((day, index) => (
             <View key={index} style={styles.day}>
-              <Text style={styles.temp}>
-                {parseFloat(day.temp.day).toFixed(1)}
-              </Text>
+              <View
+                style={{
+                  width: " 100%",
+                  flexDirection: "row",
+                  alignItems: "flex-end",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <Text style={styles.temp}>
+                  {parseFloat(day.temp.day).toFixed(1)}
+                </Text>
+                <Fontisto
+                  name={icons[day.weather[0].main]}
+                  size={70}
+                  color="black"
+                />
+              </View>
               <Text style={styles.description}>{day.weather[0].main}</Text>
               <Text style={styles.weatherInfo}>
                 {day.weather[0].description}
@@ -79,7 +102,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "tomato",
+    backgroundColor: "#d0ebff",
   },
   city: {
     flex: 1.2,
@@ -97,11 +120,11 @@ const styles = StyleSheet.create({
   },
   temp: {
     marginTop: 50,
-    fontSize: 178,
+    fontSize: 70,
   },
   description: {
-    marginTop: -30,
-    fontSize: 60,
+    marginTop: 5,
+    fontSize: 40,
   },
   weatherInfo: {
     fontSize: 20,
